@@ -6,15 +6,18 @@ on:
       - master
 
   schedule:
-  - cron: "0 7,10,14 * * *" # See https://crontab.guru/#0_7,9,11_*_*_1,3
+  - cron: "0 7,10,14 * * *"
 
 jobs:
   auto_commit:
     runs-on: ubuntu-latest
+    permissions:                # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write      # 'write' access to pull requests
     steps:
       - name: DEBUG
         run: echo "::debug::Ref = ${{github.ref}}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -46,7 +49,7 @@ jobs:
           git commit -m "${arr[$rand]}"
 
       - name: GitHub Push
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@master
         with:
           directory: "."
           github_token: ${{ secrets.GITHUB_TOKEN }}
